@@ -1,0 +1,12 @@
+{
+  "name": "voxelgl",
+  "version": "1.0.0",
+  "description": "A voxel engine written from scratch in JavaScript and WebGL",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/",
+    "check": "node --check src/main.js && node --check src/renderer.js",
+    "start": "npx --yes serve ."
+  },
+  "license": "MIT"
+}

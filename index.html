@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>voxelgl</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #000; font-family: system-ui, sans-serif; }
+  #view { width: 100vw; height: 100vh; display: block; cursor: crosshair; }
+  #hud { position: fixed; top: 8px; left: 8px; color: #fff; font: 13px/1.4 monospace; text-shadow: 0 1px 2px #000; pointer-events: none; }
+  #crosshair { position: fixed; left: 50%; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; pointer-events: none; }
+  #crosshair::before, #crosshair::after { content: ''; position: absolute; background: rgba(255,255,255,.85); }
+  #crosshair::before { left: 7px; top: 0; width: 2px; height: 16px; }
+  #crosshair::after { top: 7px; left: 0; width: 16px; height: 2px; }
+  #overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.45); color: #fff; pointer-events: none; }
+  #overlay div { background: rgba(0,0,0,.7); padding: 1.5rem 2rem; border-radius: 8px; max-width: 420px; line-height: 1.6; }
+  kbd { background: #333; padding: 0 .4em; border-radius: 3px; font-family: monospace; }
+</style>
+</head>
+<body>
+<canvas id="view"></canvas>
+<div id="crosshair"></div>
+<div id="hud"></div>
+<div id="overlay"><div>
+  <strong>voxelgl</strong><br>
+  Click to capture the mouse.<br>
+  <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move, <kbd>Space</kbd> jump, <kbd>F</kbd> toggle flying (<kbd>Shift</kbd> descends)<br>
+  Left click breaks a block, right click places one, <kbd>1</kbd>-<kbd>7</kbd> pick the block.<br>
+  Add <code>?seed=42</code> to the URL for a different world.
+</div></div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
