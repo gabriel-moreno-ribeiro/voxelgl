@@ -7,6 +7,8 @@
   html, body { margin: 0; height: 100%; overflow: hidden; background: #000; font-family: system-ui, sans-serif; }
   #view { width: 100vw; height: 100vh; display: block; cursor: crosshair; }
   #hud { position: fixed; top: 8px; left: 8px; color: #fff; font: 13px/1.4 monospace; text-shadow: 0 1px 2px #000; pointer-events: none; }
+  #game { position: fixed; top: 8px; right: 8px; padding: 6px 12px; border-radius: 6px; background: rgba(0,0,0,.55); color: #9ff; font: 15px/1.4 monospace; pointer-events: none; }
+  #game.won { color: #6f6; } #game.lost { color: #f66; } #game.idle { color: #ccc; }
   #crosshair { position: fixed; left: 50%; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; pointer-events: none; }
   #crosshair::before, #crosshair::after { content: ''; position: absolute; background: rgba(255,255,255,.85); }
   #crosshair::before { left: 7px; top: 0; width: 2px; height: 16px; }
@@ -20,11 +22,13 @@
 <canvas id="view"></canvas>
 <div id="crosshair"></div>
 <div id="hud"></div>
+<div id="game" class="idle">press G to start a gem hunt</div>
 <div id="overlay"><div>
   <strong>voxelgl</strong><br>
   Click to capture the mouse.<br>
   <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move, <kbd>Space</kbd> jump, <kbd>F</kbd> toggle flying (<kbd>Shift</kbd> descends)<br>
   Left click breaks a block, right click places one, <kbd>1</kbd>-<kbd>7</kbd> pick the block.<br>
+  <kbd>G</kbd> starts a <strong>gem hunt</strong>: 10 glowing gems are hidden around you, find and break them all in two minutes. The compass in the corner points to the nearest one.<br>
   Add <code>?seed=42</code> to the URL for a different world.
 </div></div>
 <script type="module" src="./src/main.js"></script>

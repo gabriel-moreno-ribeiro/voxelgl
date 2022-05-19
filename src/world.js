@@ -16,6 +16,7 @@ export const BLOCK = {
   WOOD: 6,
   LEAVES: 7,
   BRICK: 8,
+  GEM: 9,
 };
 
 /** RGB colour per block id, per face group (top, side, bottom). */
@@ -28,6 +29,7 @@ export const BLOCK_COLORS = {
   [BLOCK.WOOD]: { top: [0.6, 0.45, 0.25], side: [0.42, 0.3, 0.15], bottom: [0.6, 0.45, 0.25] },
   [BLOCK.LEAVES]: { top: [0.2, 0.55, 0.2], side: [0.18, 0.5, 0.18], bottom: [0.15, 0.42, 0.15] },
   [BLOCK.BRICK]: { top: [0.7, 0.3, 0.25], side: [0.72, 0.32, 0.27], bottom: [0.65, 0.28, 0.23] },
+  [BLOCK.GEM]: { top: [0.35, 1.0, 0.95], side: [0.2, 0.9, 0.85], bottom: [0.15, 0.7, 0.65] },
 };
 
 export function isSolid(id) {

@@ -5,14 +5,17 @@ import { Renderer } from './renderer.js';
 import { createPlayer, stepPlayer, PLAYER, collides } from './physics.js';
 import { raycast } from './raycast.js';
 import { lookDirection } from './math.js';
+import { GemHunt } from './game.js';
 
 const canvas = document.getElementById('view');
 const hud = document.getElementById('hud');
+const gameHud = document.getElementById('game');
 const overlay = document.getElementById('overlay');
 
 const seed = Number(new URLSearchParams(location.search).get('seed')) || 1337;
 const world = new World(seed);
 const renderer = new Renderer(canvas, world, { renderDistance: 5 });
+const game = new GemHunt(world, { count: 10, radius: 40, duration: 120, seed });
 
 // spawn on top of the terrain at the origin
 const spawnY = world.heightAt(8, 8) + 2;
@@ -27,6 +30,10 @@ const names = { [BLOCK.BRICK]: 'brick', [BLOCK.STONE]: 'stone', [BLOCK.WOOD]: 'w
 window.addEventListener('keydown', (e) => {
   keys.add(e.code);
   if (e.code === 'KeyF') player.flying = !player.flying;
+  if (e.code === 'KeyG') {
+    game.seed = seed + Math.floor(Math.random() * 1e6);
+    game.start(Math.floor(player.pos[0]), Math.floor(player.pos[2]));
+  }
   if (/^Digit[1-7]$/.test(e.code)) selected = palette[Number(e.code.slice(5)) - 1];
   if (e.code === 'Space') e.preventDefault();
 });
@@ -50,7 +57,9 @@ canvas.addEventListener('mousedown', (e) => {
   const hit = raycast((x, y, z) => world.getBlock(x, y, z), eye(), lookDirection(player.yaw, player.pitch), 7);
   if (!hit) return;
   if (e.button === 0) {
+    const id = world.getBlock(hit.x, hit.y, hit.z);
     world.setBlock(hit.x, hit.y, hit.z, BLOCK.AIR);
+    game.onBlockBroken(hit.x, hit.y, hit.z, id);
   } else if (e.button === 2) {
     const [x, y, z] = [hit.x + hit.normal[0], hit.y + hit.normal[1], hit.z + hit.normal[2]];
     if (y < 0 || y >= CHUNK_HEIGHT) return;
@@ -86,6 +95,9 @@ function frame(now) {
 
   renderer.updateChunks(player.pos, 3);
   renderer.render(eye(), player.yaw, player.pitch);
+  game.tick(dt);
+  gameHud.textContent = game.state === 'playing' ? `${game.status()} · nearest ${game.compass(player.pos, player.yaw)}` : game.status();
+  gameHud.className = game.state;
 
   frames++;
   fpsTime += dt;
