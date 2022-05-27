@@ -1,5 +1,7 @@
 # voxelgl
 
+> 🇺🇸 [English version below](#english)
+
 Um motor de voxels estilo Minecraft em JavaScript e WebGL cru. Nenhuma biblioteca, nenhum build: terreno infinito em chunks, greedy meshing, câmera em primeira pessoa com colisão e gravidade, quebrar e colocar blocos. E um joguinho em cima: a **caça às gemas**.
 
 ```sh
@@ -39,4 +41,43 @@ Testes: `npm test` (noise, geração, mesher, raycast, física, matrizes e o jog
 
 ---
 
-**EN:** a Minecraft-style voxel engine in raw WebGL with no libraries and no build step: chunked infinite terrain from seeded fractal noise, greedy meshing, per-chunk GPU buffers, Amanatides–Woo raycasting for block picking, AABB physics with gravity and flying. On top of it, a small game: press `G` to start a gem hunt (ten hidden gems, two minutes, a compass to the nearest one). Engine and game logic run headless in the Node test-suite. MIT.
+## English
+
+A Minecraft-style voxel engine in JavaScript and raw WebGL. No library, no build: infinite chunked terrain, greedy meshing, first-person camera with collision and gravity, breaking and placing blocks. And a little game on top: the **gem hunt**.
+
+```sh
+npx serve .     # any static server
+```
+
+Click to capture the mouse and:
+
+| Key | Action |
+| --- | --- |
+| `W A S D` | walk |
+| `Space` / `Shift` | jump / descend while flying |
+| `F` | fly |
+| left / right click | break / place block |
+| `1`-`7` | block type |
+| `G` | **starts a gem hunt** |
+
+`?seed=42` in the URL generates another world.
+
+## Gem hunt
+
+Press `G` and ten shiny blocks appear hidden within a 40-block radius around you. You have two minutes to find and break all of them. The compass in the corner points to the nearest gem (`↗ 23m`), which makes the thing more "hot or cold" than "search the map". Won? Your time shows up. Lost? `G` again, the draw changes.
+
+All the logic lives in `src/game.js` (placement on top of the terrain, away from water and trees; score; clock; compass relative to the camera yaw) and is tested in Node, without WebGL.
+
+## The engine
+
+- **World** (`src/world.js`): a map of 16x64x16 chunks, each a `Uint8Array` of ids. Terrain comes from seeded fractal value noise (`src/noise.js`): a heightmap gives stone, dirt and grass; low areas fill with water and sand; a hash decides where a tree is born. Chunks are generated as the player gets close.
+- **Greedy meshing** (`src/mesher.js`): per axis and slice, a mask marks the visible faces (a face between two opaque blocks doesn't exist) and runs of equal faces become the largest rectangle possible. A flat 16x16 field becomes half a dozen quads instead of hundreds. Edges look at the neighbouring chunk, so there's no "seam".
+- **Renderer** (`src/renderer.js`): one set of buffers per chunk, rebuilt only when the chunk gets dirty. Shaders with per-face color, directional light and fog. Far chunks are unloaded from the GPU.
+- **Raycast** (`src/raycast.js`): Amanatides & Woo grid traversal, finds the block you're looking at and through which face it entered, which is where the new block goes.
+- **Physics** (`src/physics.js`): the player is a box; movement is resolved axis by axis against solid blocks, with gravity, jumping and fly mode.
+
+The part that taught me the most was greedy meshing. I had a naive version drawing one quad per face, and the world froze with three chunks. Rewriting that was the difference between "demo" and "playable".
+
+Tests: `npm test` (noise, generation, mesher, raycast, physics, matrices and the game).
+
+MIT.
